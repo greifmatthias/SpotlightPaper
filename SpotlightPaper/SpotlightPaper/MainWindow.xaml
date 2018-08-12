@@ -5,10 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SpotlightPaper"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="300" Width="450"
+        ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterScreen">
+
     <Grid>
-        <CheckBox x:Name="chEnable" Checked="chEnable_Checked">
-            <TextBlock Text="Enable periodicaly spotlight image as desktop wallpaper"></TextBlock>
-        </CheckBox>
+        <Image x:Name="imgBackground" Stretch="UniformToFill"></Image>
+
+        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Background="#ECEFF1">
+            <CheckBox x:Name="chEnable" Checked="chEnable_Checked" Margin="25">
+                <TextBlock Text="Enable periodically Windows Spotlight image as desktop wallpaper." TextWrapping="WrapWithOverflow"></TextBlock>
+            </CheckBox>
+        </StackPanel>
     </Grid>
 </Window>

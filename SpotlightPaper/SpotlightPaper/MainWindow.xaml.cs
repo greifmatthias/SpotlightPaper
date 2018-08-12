@@ -32,6 +32,8 @@ namespace SpotlightPaper
             image = folder.GetFiles()
              .OrderByDescending(f => f.LastWriteTime)
              .First().FullName;
+
+            imgBackground.Source = new BitmapImage(new Uri(image, UriKind.Absolute));
         }
 
         private void chEnable_Checked(object sender, RoutedEventArgs e)
