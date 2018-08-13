@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -43,6 +44,10 @@ namespace SpotlightPaper
             window = new MainWindow(running, this);
 
             this.Exit += App_Exit;
+
+            // Start at startup
+            RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            rk.SetValue(System.Windows.Forms.Application.ProductName, System.Windows.Forms.Application.ExecutablePath);
         }
 
         private void App_Exit(object sender, ExitEventArgs e)
