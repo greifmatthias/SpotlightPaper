@@ -60,6 +60,8 @@ namespace SpotlightPaper
 
         private void chEnable_Checked(object sender, RoutedEventArgs e)
         {
+            Uri iconUri = new Uri("tray-on.ico", UriKind.RelativeOrAbsolute);
+
             // Start or stop timer
             if (chEnable.IsChecked == true)
             {
@@ -69,7 +71,11 @@ namespace SpotlightPaper
             else
             {
                 timer.Stop();
+                iconUri = new Uri("tray.ico", UriKind.RelativeOrAbsolute);
             }
+
+            // Set window icon
+            this.Icon = BitmapFrame.Create(iconUri);
 
             // Update app
             parent.runningChanged(chEnable.IsChecked.Value);
@@ -87,7 +93,7 @@ namespace SpotlightPaper
 
             // Get latest image
             image = info.GetFiles()
-             .OrderByDescending(f => f.LastWriteTime)
+             .OrderByDescending(f => f.LastWriteTime).ThenBy(f => f.Name)
              .First().FullName;
 
             // Set desktop wallpaper if needed
@@ -127,6 +133,11 @@ namespace SpotlightPaper
             // Save settings
             settings.autostart = chAutostart.IsChecked == true;
             settings.saveSettings();
+        }
+
+        private void btnExit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 
 namespace SpotlightPaper
 {
@@ -47,7 +48,7 @@ namespace SpotlightPaper
             else
             {
                 // just one instance is required to run
-                this.Shutdown();
+                System.Windows.Application.Current.Shutdown();
             }
         }
 
@@ -65,7 +66,7 @@ namespace SpotlightPaper
         {
             // Update tray icon
             if (isrunning)
-            {
+            {                
                 trayicon.Icon = new Icon("tray-on.ico");
                 trayicon.Text = "SpotlightPaper is doing great.";
             }
