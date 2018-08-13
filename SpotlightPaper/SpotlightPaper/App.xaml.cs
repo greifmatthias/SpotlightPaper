@@ -41,6 +41,13 @@ namespace SpotlightPaper
 
             // Init control window
             window = new MainWindow(running, this);
+
+            this.Exit += App_Exit;
+        }
+
+        private void App_Exit(object sender, ExitEventArgs e)
+        {
+            trayicon.Visible = false;
         }
 
         private void Trayicon_DoubleClick(object sender, EventArgs e)
