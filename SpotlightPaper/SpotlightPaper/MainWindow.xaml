@@ -14,7 +14,7 @@
         <Image x:Name="imgBackground" Stretch="UniformToFill"></Image>
 
         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Background="#ECEFF1">
-            <CheckBox x:Name="chEnable" Checked="chEnable_Checked" Margin="25">
+            <CheckBox x:Name="chEnable" Checked="chEnable_Checked" Unchecked="chEnable_Checked" Margin="25">
                 <TextBlock Text="Enable periodically Windows Spotlight image as desktop wallpaper." TextWrapping="WrapWithOverflow"></TextBlock>
             </CheckBox>
         </StackPanel>
