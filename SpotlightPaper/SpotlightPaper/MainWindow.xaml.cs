@@ -23,6 +23,8 @@ namespace SpotlightPaper
 
         Timer timer;
 
+        DirectoryInfo info;
+
         public MainWindow(Boolean running, App parent)
         {
             InitializeComponent();
@@ -31,13 +33,8 @@ namespace SpotlightPaper
             this.parent = parent;
 
             // Get datafolder
-            DirectoryInfo folder = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+            info = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
                 + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
-
-            // Get latest image
-            image = folder.GetFiles()
-             .OrderByDescending(f => f.LastWriteTime)
-             .First().FullName;
 
             //Setup timer
             timer = new Timer();
@@ -79,6 +76,11 @@ namespace SpotlightPaper
 
         private void setPapers(Boolean wallpaperset)
         {
+            // Get latest image
+            image = info.GetFiles()
+             .OrderByDescending(f => f.LastWriteTime)
+             .First().FullName;
+
             if (wallpaperset)
             {
                 Wallpaper.Set(new Uri(image), Wallpaper.Style.Centered);
