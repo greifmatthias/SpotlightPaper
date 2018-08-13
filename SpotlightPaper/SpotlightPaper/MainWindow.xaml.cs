@@ -113,7 +113,10 @@ namespace SpotlightPaper
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
             // Delete key
-            rk.DeleteValue(System.Windows.Forms.Application.ProductName);
+            if (rk.GetValueNames().Contains(System.Windows.Forms.Application.ProductName))
+            {
+                rk.DeleteValue(System.Windows.Forms.Application.ProductName);
+            }
 
             // Reenable if needed
             if (chAutostart.IsChecked == true)
