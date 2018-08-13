@@ -63,8 +63,6 @@ namespace SpotlightPaper
 
         public void runningChanged(Boolean isrunning)
         {
-            this.settings.saveSettings();
-
             // Update tray icon
             if (isrunning)
             {

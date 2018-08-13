@@ -47,6 +47,9 @@ namespace SpotlightPaper
             // Setup UI
             chEnable.IsChecked = settings.changepaper;
             chAutostart.IsChecked = settings.autostart;
+
+            // Make sure sample image is set
+            setPapers(false);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -70,6 +73,10 @@ namespace SpotlightPaper
 
             // Update app
             parent.runningChanged(chEnable.IsChecked.Value);
+
+            // Update settings
+            this.settings.changepaper = chEnable.IsChecked == true;
+            this.settings.saveSettings();
         }
 
         private void setPapers(Boolean wallpaperset)
