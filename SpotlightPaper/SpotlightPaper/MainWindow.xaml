@@ -8,7 +8,8 @@
         Title="MainWindow" Height="300" Width="450"
         ResizeMode="NoResize"
         WindowStyle="SingleBorderWindow"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing">
 
     <Grid>
         <Image x:Name="imgBackground" Stretch="UniformToFill"></Image>

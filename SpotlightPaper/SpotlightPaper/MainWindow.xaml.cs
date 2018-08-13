@@ -86,5 +86,11 @@ namespace SpotlightPaper
 
             imgBackground.Source = new BitmapImage(new Uri(image, UriKind.Absolute));
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
+        }
     }
 }
