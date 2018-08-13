@@ -20,34 +20,35 @@ namespace SpotlightPaper
         private MainWindow window;
         private NotifyIcon trayicon;
 
+        private Settings settings;
+
         public App()
         {
-            Boolean running = false;
-
-            // Try to read config
-            if (File.Exists("Config"))
+            if (System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location)).Count() == 1)
             {
-                TextReader tr = new StreamReader("Config");
-                running = Convert.ToBoolean(tr.ReadLine());
-                tr.Close();
+                // Load settings
+                this.settings = new Settings();
+                this.settings.loadSettings();
+
+                // Setup tray icon
+                trayicon = new NotifyIcon();
+                trayicon.Visible = true;
+
+                runningChanged(this.settings.changepaper);
+
+                trayicon.DoubleClick += Trayicon_DoubleClick;
+
+                // Init control window
+                window = new MainWindow(this.settings, this);
+
+                // On application quit
+                this.Exit += App_Exit;
             }
-
-            // Setup tray icon
-            trayicon = new NotifyIcon();
-            trayicon.Visible = true;
-
-            runningChanged(running);
-
-            trayicon.DoubleClick += Trayicon_DoubleClick;
-
-            // Init control window
-            window = new MainWindow(running, this);
-
-            this.Exit += App_Exit;
-
-            // Start at startup
-            RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            rk.SetValue(System.Windows.Forms.Application.ProductName, System.Windows.Forms.Application.ExecutablePath);
+            else
+            {
+                // just one instance is required to run
+                this.Shutdown();
+            }
         }
 
         private void App_Exit(object sender, ExitEventArgs e)
@@ -62,10 +63,7 @@ namespace SpotlightPaper
 
         public void runningChanged(Boolean isrunning)
         {
-            // Save
-            TextWriter tw = new StreamWriter("Config");
-            tw.WriteLine(isrunning.ToString());
-            tw.Close();
+            this.settings.saveSettings();
 
             // Update tray icon
             if (isrunning)

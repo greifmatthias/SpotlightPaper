@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,9 +26,14 @@ namespace SpotlightPaper
 
         DirectoryInfo info;
 
-        public MainWindow(Boolean running, App parent)
+        Settings settings;
+
+        public MainWindow(Settings settings, App parent)
         {
             InitializeComponent();
+
+            // Set
+            this.settings = settings;
 
             // Check if need to run
             this.parent = parent;
@@ -38,25 +44,20 @@ namespace SpotlightPaper
             timer.Interval = 1000 * 60 * 60; // 1 hour
             timer.Enabled = true;
 
-            if (running)
-            {
-                timer.Start();
-            }
-
-            // Setup wallpapers
-            setPapers(running);
-
             // Setup UI
-            chEnable.IsChecked = running;
+            chEnable.IsChecked = settings.changepaper;
+            chAutostart.IsChecked = settings.autostart;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
+            // Update desktop wallpaper
             setPapers(true);
         }
 
         private void chEnable_Checked(object sender, RoutedEventArgs e)
         {
+            // Start or stop timer
             if (chEnable.IsChecked == true)
             {
                 setPapers(true);
@@ -67,6 +68,7 @@ namespace SpotlightPaper
                 timer.Stop();
             }
 
+            // Update app
             parent.runningChanged(chEnable.IsChecked.Value);
         }
 
@@ -81,11 +83,14 @@ namespace SpotlightPaper
              .OrderByDescending(f => f.LastWriteTime)
              .First().FullName;
 
+            // Set desktop wallpaper if needed
             if (wallpaperset)
             {
                 Wallpaper.Set(new Uri(image), Wallpaper.Style.Centered);
+                tbUpdateStamp.Text = DateTime.Now.ToLocalTime().ToString();
             }
 
+            // Set sample
             imgBackground.Source = new BitmapImage(new Uri(image, UriKind.Absolute));
         }
 
@@ -93,6 +98,25 @@ namespace SpotlightPaper
         {
             this.Hide();
             e.Cancel = true;
+        }
+
+        private void chAutostart_Checked(object sender, RoutedEventArgs e)
+        {
+            // Get regis entry
+            RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+            // Delete key
+            rk.DeleteValue(System.Windows.Forms.Application.ProductName);
+
+            // Reenable if needed
+            if (chAutostart.IsChecked == true)
+            {
+                rk.SetValue(System.Windows.Forms.Application.ProductName, System.Windows.Forms.Application.ExecutablePath);
+            }
+
+            // Save settings
+            settings.autostart = chAutostart.IsChecked == true;
+            settings.saveSettings();
         }
     }
 }

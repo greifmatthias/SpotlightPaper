@@ -3,20 +3,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SpotlightPaper"
         mc:Ignorable="d"
-        Title="Control Panel" Height="300" Width="450"
+        Title="Control Panel" Height="400" Width="450"
         ResizeMode="NoResize"
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
         Closing="Window_Closing">
 
     <Grid>
-        <Image x:Name="imgBackground" Stretch="UniformToFill"></Image>
-
-        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Background="#ECEFF1">
-            <CheckBox x:Name="chEnable" Checked="chEnable_Checked" Unchecked="chEnable_Checked" Margin="25">
-                <TextBlock Text="Enable periodically Windows Spotlight image as desktop wallpaper." TextWrapping="WrapWithOverflow"></TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Grid>
+            <Image x:Name="imgBackground" Stretch="UniformToFill"></Image>
+        </Grid>
+        
+        <StackPanel Grid.Row="1" Orientation="Vertical" Background="#ECEFF1">
+            <CheckBox x:Name="chEnable" Checked="chEnable_Checked" Unchecked="chEnable_Checked" Margin="25,25,25,10">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Enable periodically Windows Spotlight image as desktop wallpaper." TextWrapping="WrapWithOverflow"></TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Desktop last updated at: " Margin="0,3" Foreground="#BB000000" FontStyle="Italic"></TextBlock>
+                        <TextBlock x:Name="tbUpdateStamp" Text="not yet" Margin="0,3" Foreground="#BB000000" FontStyle="Italic"></TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </CheckBox>
+            <CheckBox x:Name="chAutostart" Checked="chAutostart_Checked" Unchecked="chAutostart_Checked" Margin="25,10,25,25">
+                <TextBlock Text="Automatically launch the application in the background when this beast starts up." TextWrapping="WrapWithOverflow"></TextBlock>
             </CheckBox>
         </StackPanel>
     </Grid>
