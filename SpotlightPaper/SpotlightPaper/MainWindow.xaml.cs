@@ -32,10 +32,6 @@ namespace SpotlightPaper
             // Check if need to run
             this.parent = parent;
 
-            // Get datafolder
-            info = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
-
             //Setup timer
             timer = new Timer();
             timer.Tick += Timer_Tick;
@@ -76,6 +72,10 @@ namespace SpotlightPaper
 
         private void setPapers(Boolean wallpaperset)
         {
+            // Get datafolder
+            info = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
+
             // Get latest image
             image = info.GetFiles()
              .OrderByDescending(f => f.LastWriteTime)
