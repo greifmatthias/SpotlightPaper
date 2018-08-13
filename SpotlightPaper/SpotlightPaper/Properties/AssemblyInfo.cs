@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SpotlightPaper")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Simple application allowing autochange desktop background according to Windows Spotlight feature.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Greif Matthias")]
 [assembly: AssemblyProduct("SpotlightPaper")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCopyright("Greif Matthias SpotlightPaper ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
