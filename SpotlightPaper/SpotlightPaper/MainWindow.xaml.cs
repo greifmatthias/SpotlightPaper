@@ -103,10 +103,11 @@ namespace SpotlightPaper
 
             while (image == "")
             {
+                // Get image size
                 System.Drawing.Image img = System.Drawing.Image.FromFile(files[count].FullName);
-
                 bool landscapeimage = img.Height <= img.Width;
 
+                // Set source if valid
                 if (landscape && landscapeimage || !landscape && !landscapeimage)
                 {
                     image = files[count].FullName;
@@ -137,26 +138,24 @@ namespace SpotlightPaper
             // Get regis entry
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
-            // Delete key
-            if (rk.GetValueNames().Contains(System.Windows.Forms.Application.ProductName))
-            {
-                rk.DeleteValue(System.Windows.Forms.Application.ProductName);
-            }
-
-            // Reenable if needed
+            // Set/Delete key if needed
             if (chAutostart.IsChecked == true)
             {
+                // Set key to run at startup
                 rk.SetValue(System.Windows.Forms.Application.ProductName, System.Windows.Forms.Application.ExecutablePath);
             }
+            else
+            {
+                // Delete key
+                if (rk.GetValueNames().Contains(System.Windows.Forms.Application.ProductName))
+                {
+                    rk.DeleteValue(System.Windows.Forms.Application.ProductName);
+                }
+            }
 
-            // Save settings
+            // Set/Save settings
             settings.autostart = chAutostart.IsChecked == true;
             settings.saveSettings();
-        }
-
-        private void btnExit_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Application.Current.Shutdown();
         }
     }
 }

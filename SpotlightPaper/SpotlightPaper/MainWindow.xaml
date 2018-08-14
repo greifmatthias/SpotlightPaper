@@ -33,17 +33,6 @@
             <CheckBox x:Name="chAutostart" Checked="chAutostart_Checked" Unchecked="chAutostart_Checked" Margin="25,10,25,25">
                 <TextBlock Text="Automatically launch the application in the background when this beast starts up." TextWrapping="WrapWithOverflow"></TextBlock>
             </CheckBox>
-
-            <Grid>
-                <!--<Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>-->
-
-                <Button x:Name="btnExit" Click="btnExit_Click">
-                    <TextBlock Text="Exit" Padding="3"></TextBlock>
-                </Button>
-            </Grid>
         </StackPanel>
     </Grid>
 </Window>
