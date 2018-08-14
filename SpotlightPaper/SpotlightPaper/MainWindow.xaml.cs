@@ -92,9 +92,28 @@ namespace SpotlightPaper
                 + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
 
             // Get latest image
-            image = info.GetFiles()
-             .OrderByDescending(f => f.LastWriteTime).ThenBy(f => f.Name)
-             .First().FullName;
+            List<FileInfo> files = info.GetFiles()
+             .OrderByDescending(f => f.LastWriteTime).ThenBy(f => f.Name).ToList();
+
+            // Get screen rotation
+            bool landscape = Screen.PrimaryScreen.WorkingArea.Height <= Screen.PrimaryScreen.WorkingArea.Width;
+
+            string image = "";
+            int count = 0;
+
+            while (image == "")
+            {
+                System.Drawing.Image img = System.Drawing.Image.FromFile(files[count].FullName);
+
+                bool landscapeimage = img.Height <= img.Width;
+
+                if (landscape && landscapeimage || !landscape && !landscapeimage)
+                {
+                    image = files[count].FullName;
+                }
+
+                count++;
+            }
 
             // Set desktop wallpaper if needed
             if (wallpaperset)
