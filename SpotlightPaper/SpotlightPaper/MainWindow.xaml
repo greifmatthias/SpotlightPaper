@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Control Panel" Height="400" Width="450"
+        Title="Control Panel" Height="500" Width="450"
         ResizeMode="NoResize"
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
@@ -15,12 +15,17 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
-        
+
         <Grid>
             <Image x:Name="imgBackground" Stretch="UniformToFill"></Image>
         </Grid>
-        
+
         <StackPanel Grid.Row="1" Orientation="Vertical" Background="#ECEFF1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0" Padding="0">
+                <StackPanel x:Name="spSources" Orientation="Horizontal" Margin="5, 8">
+                </StackPanel>                
+            </ScrollViewer>
+            
             <CheckBox x:Name="chEnable" Checked="chEnable_Checked" Unchecked="chEnable_Checked" Margin="25,25,25,10">
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Enable periodically Windows Spotlight image as desktop wallpaper." TextWrapping="WrapWithOverflow"></TextBlock>

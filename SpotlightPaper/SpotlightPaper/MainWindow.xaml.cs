@@ -49,7 +49,7 @@ namespace SpotlightPaper
             chAutostart.IsChecked = settings.autostart;
 
             // Make sure sample image is set
-            setPapers(false);
+            setPapers(false, settings.lastloaded);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -79,41 +79,58 @@ namespace SpotlightPaper
 
             // Update app
             parent.runningChanged(chEnable.IsChecked.Value);
-
-            // Update settings
-            this.settings.changepaper = chEnable.IsChecked == true;
-            this.settings.saveSettings();
         }
 
-        private void setPapers(Boolean wallpaperset)
+        private void setPapers(Boolean wallpaperset, string customimage = "")
         {
-            // Get datafolder
-            info = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
-
-            // Get latest image
-            List<FileInfo> files = info.GetFiles()
-             .OrderByDescending(f => f.LastWriteTime).ThenBy(f => f.Name).ToList();
-
-            // Get screen rotation
-            bool landscape = Screen.PrimaryScreen.WorkingArea.Height <= Screen.PrimaryScreen.WorkingArea.Width;
-
             string image = "";
-            int count = 0;
 
-            while (image == "")
+            if (customimage == "")
             {
-                // Get image size
-                System.Drawing.Image img = System.Drawing.Image.FromFile(files[count].FullName);
-                bool landscapeimage = img.Height <= img.Width;
+                // Get source datafolder
+                info = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                    + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
 
-                // Set source if valid
-                if (landscape && landscapeimage || !landscape && !landscapeimage)
+                // Get latest image from source
+                List<FileInfo> files = info.GetFiles()
+                 .OrderByDescending(f => f.LastWriteTime).ThenBy(f => f.Name).ToList();
+
+                // Get screen rotation
+                bool landscape = Screen.PrimaryScreen.WorkingArea.Height <= Screen.PrimaryScreen.WorkingArea.Width;
+
+                int count = 0;
+
+                while (image == "")
                 {
-                    image = files[count].FullName;
+                    // Get image size
+                    System.Drawing.Image img = System.Drawing.Image.FromFile(files[count].FullName);
+                    bool landscapeimage = img.Height <= img.Width;
+
+                    // Set source if valid
+                    if (landscape && landscapeimage || !landscape && !landscapeimage)
+                    {
+                        image = files[count].FullName;
+                    }
+
+                    count++;
                 }
 
-                count++;
+                // Copy file if new image to local folder
+                if (!Directory.Exists(System.Windows.Forms.Application.StartupPath + "\\images\\"))
+                {
+                    Directory.CreateDirectory(System.Windows.Forms.Application.StartupPath + "\\images\\");
+                }
+                if (!File.Exists(System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name))
+                {
+                    File.Copy(image, System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name);
+                }
+
+                // Set image source of local folder
+                image = System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name;
+            }
+            else
+            {
+                image = System.Windows.Forms.Application.StartupPath + "\\images\\" + customimage;
             }
 
             // Set desktop wallpaper if needed
@@ -125,6 +142,22 @@ namespace SpotlightPaper
 
             // Set sample
             imgBackground.Source = new BitmapImage(new Uri(image, UriKind.Absolute));
+
+            // Update strip
+            // Get local datafolder
+            spSources.Children.Clear();
+            info = new DirectoryInfo(System.Windows.Forms.Application.StartupPath + "\\images\\");
+            // Get latest image from source
+            List<FileInfo> locals = info.GetFiles()
+             .OrderBy(f => f.LastWriteTime).ThenBy(f => f.Name).ToList();
+            foreach (FileInfo info in locals)
+            {
+                Image img = new Image();
+                img.Width = 150;
+                img.Height = 80;
+                img.Source = new BitmapImage(new Uri(info.FullName, UriKind.Absolute));
+                spSources.Children.Add(img);
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

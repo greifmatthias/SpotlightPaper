@@ -12,6 +12,8 @@ namespace SpotlightPaper
         public Boolean autostart { get; set; }
         public Boolean changepaper { get; set; }
 
+        public string lastloaded { get; set; }
+
         public void loadSettings()
         {
             // Try to read config
@@ -20,6 +22,7 @@ namespace SpotlightPaper
                 TextReader tr = new StreamReader("Config");
                 this.changepaper = Convert.ToBoolean(tr.ReadLine());
                 this.autostart = Convert.ToBoolean(tr.ReadLine());
+                this.lastloaded = Convert.ToString(tr.ReadLine());
                 tr.Close();
             }
             else
@@ -35,6 +38,7 @@ namespace SpotlightPaper
             TextWriter tw = new StreamWriter("Config");
             tw.WriteLine(this.changepaper.ToString());
             tw.WriteLine(this.autostart.ToString());
+            tw.WriteLine(this.lastloaded);
             tw.Close();
         }
     }
