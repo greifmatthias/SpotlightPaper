@@ -18,6 +18,16 @@
 
         <Grid>
             <Image x:Name="imgBackground" Stretch="UniformToFill"></Image>
+            <Grid>
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0.5, 0" EndPoint="0.5, 1">
+                        <GradientStop Color="#00000000" Offset="0.0" />
+                        <GradientStop Color="#90000000" Offset="0.75" />
+                    </LinearGradientBrush>
+                </Grid.Background>
+
+                <TextBlock Text="Current Spotlight" VerticalAlignment="Bottom" Margin="25, 20" Foreground="#FFFFFF" FontSize="20"></TextBlock>
+            </Grid>
         </Grid>
 
         <StackPanel Grid.Row="1" Orientation="Vertical" Background="#ECEFF1">

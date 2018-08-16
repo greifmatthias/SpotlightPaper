@@ -93,13 +93,13 @@ namespace SpotlightPaper
 
                 // Get latest image from source
                 List<FileInfo> files = info.GetFiles()
-                 .OrderByDescending(f => f.LastWriteTime).ThenBy(f => f.Name).ToList();
+                 .OrderByDescending(f => f.LastWriteTime).ToList();
 
                 // Get screen rotation
                 bool landscape = Screen.PrimaryScreen.WorkingArea.Height <= Screen.PrimaryScreen.WorkingArea.Width;
 
+                // Get image from source datafolder
                 int count = 0;
-
                 while (image == "")
                 {
                     // Get image size
