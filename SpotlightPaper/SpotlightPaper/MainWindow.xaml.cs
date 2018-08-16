@@ -85,7 +85,7 @@ namespace SpotlightPaper
         {
             string image = "";
 
-            if (customimage == "")
+            if (customimage == "" || customimage == null)
             {
                 // Get source datafolder
                 info = new DirectoryInfo(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
