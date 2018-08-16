@@ -67,12 +67,12 @@ namespace SpotlightPaper
             // Update tray icon
             if (isrunning)
             {                
-                trayicon.Icon = new Icon("tray-on.ico");
+                trayicon.Icon = new Icon(System.Windows.Forms.Application.StartupPath + "\\tray-on.ico");
                 trayicon.Text = "SpotlightPaper is doing great.";
             }
             else
             {
-                trayicon.Icon = new Icon("tray.ico");
+                trayicon.Icon = new Icon(System.Windows.Forms.Application.StartupPath + "\\tray.ico");
                 trayicon.Text = "SpotlightPaper is not doing much.";
             }
         }

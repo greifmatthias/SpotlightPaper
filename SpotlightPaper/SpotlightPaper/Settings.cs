@@ -17,9 +17,9 @@ namespace SpotlightPaper
         public void loadSettings()
         {
             // Try to read config
-            if (File.Exists("Config"))
+            if (File.Exists(System.Windows.Forms.Application.StartupPath + "\\Config"))
             {
-                TextReader tr = new StreamReader("Config");
+                TextReader tr = new StreamReader(System.Windows.Forms.Application.StartupPath + "\\Config");
                 this.changepaper = Convert.ToBoolean(tr.ReadLine());
                 this.autostart = Convert.ToBoolean(tr.ReadLine());
                 this.lastloaded = Convert.ToString(tr.ReadLine());
@@ -35,7 +35,7 @@ namespace SpotlightPaper
         public void saveSettings()
         {
             // Save
-            TextWriter tw = new StreamWriter("Config");
+            TextWriter tw = new StreamWriter(System.Windows.Forms.Application.StartupPath + "\\Config");
             tw.WriteLine(this.changepaper.ToString());
             tw.WriteLine(this.autostart.ToString());
             tw.WriteLine(this.lastloaded);

@@ -60,7 +60,7 @@ namespace SpotlightPaper
 
         private void chEnable_Checked(object sender, RoutedEventArgs e)
         {
-            Uri iconUri = new Uri("tray-on.ico", UriKind.RelativeOrAbsolute);
+            Uri iconUri = new Uri(System.Windows.Forms.Application.StartupPath + "\\tray-on.ico", UriKind.RelativeOrAbsolute);
 
             // Start or stop timer
             if (chEnable.IsChecked == true)
@@ -71,7 +71,7 @@ namespace SpotlightPaper
             else
             {
                 timer.Stop();
-                iconUri = new Uri("tray.ico", UriKind.RelativeOrAbsolute);
+                iconUri = new Uri(System.Windows.Forms.Application.StartupPath + "\\tray.ico", UriKind.RelativeOrAbsolute);
             }
 
             // Set window icon
