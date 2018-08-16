@@ -44,12 +44,12 @@ namespace SpotlightPaper
             timer.Interval = 1000 * 60 * 60; // 1 hour
             timer.Enabled = true;
 
+            // Make sure sample image is set
+            setPapers(false, settings.lastloaded);
+
             // Setup UI
             chEnable.IsChecked = settings.changepaper;
             chAutostart.IsChecked = settings.autostart;
-
-            // Make sure sample image is set
-            setPapers(false, settings.lastloaded);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -79,6 +79,10 @@ namespace SpotlightPaper
 
             // Update app
             parent.runningChanged(chEnable.IsChecked.Value);
+
+            // Update settings
+            settings.changepaper = chEnable.IsChecked == true;
+            settings.saveSettings();
         }
 
         private void setPapers(Boolean wallpaperset, string customimage = "")
