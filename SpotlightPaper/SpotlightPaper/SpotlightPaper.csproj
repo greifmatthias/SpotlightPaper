@@ -94,6 +94,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Imaging.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Wallpaper.cs" />
     <Page Include="MainWindow.xaml">

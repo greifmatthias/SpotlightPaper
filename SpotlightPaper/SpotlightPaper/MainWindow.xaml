@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Control Panel" Height="500" Width="450"
+        Title="Control Panel" Height="550" Width="450"
         ResizeMode="NoResize"
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
@@ -31,11 +31,19 @@
         </Grid>
 
         <StackPanel Grid.Row="1" Orientation="Vertical" Background="#ECEFF1">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0" Padding="0">
-                <StackPanel x:Name="spSources" Orientation="Horizontal" Margin="5, 8">
-                </StackPanel>                
-            </ScrollViewer>
-            
+
+            <StackPanel x:Name="spPreviousSpots_strip" Orientation="Vertical" Background="#20000000">
+                <TextBlock Text="Previous spots" Margin="25, 25, 25, 10"></TextBlock>
+                
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Horizontal">
+                        <Grid Width="25"></Grid>
+                        <StackPanel x:Name="spSources" Orientation="Horizontal" Margin="0, 0, 0, 20">
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </StackPanel>
+
             <CheckBox x:Name="chEnable" Checked="chEnable_Checked" Unchecked="chEnable_Checked" Margin="25,25,25,10">
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Enable periodically Windows Spotlight image as desktop wallpaper." TextWrapping="WrapWithOverflow"></TextBlock>

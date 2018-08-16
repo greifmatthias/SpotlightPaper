@@ -9,7 +9,7 @@ namespace SpotlightPaper
 {
     public class Imaging
     {
-        public bool IsValidImage(string filename)
+        public static bool IsValidImage(string filename)
         {
             try
             {

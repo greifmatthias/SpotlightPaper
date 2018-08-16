@@ -93,7 +93,7 @@ namespace SpotlightPaper
 
                 // Get latest image from source
                 List<FileInfo> files = info.GetFiles()
-                 .OrderByDescending(f => f.LastWriteTime).ToList();
+                 .OrderByDescending(f => f.LastAccessTime).ToList();
 
                 // Get screen rotation
                 bool landscape = Screen.PrimaryScreen.WorkingArea.Height <= Screen.PrimaryScreen.WorkingArea.Width;
@@ -102,14 +102,17 @@ namespace SpotlightPaper
                 int count = 0;
                 while (image == "")
                 {
-                    // Get image size
-                    System.Drawing.Image img = System.Drawing.Image.FromFile(files[count].FullName);
-                    bool landscapeimage = img.Height <= img.Width;
-
-                    // Set source if valid
-                    if (landscape && landscapeimage || !landscape && !landscapeimage)
+                    if (Imaging.IsValidImage(files[count].FullName))
                     {
-                        image = files[count].FullName;
+                        // Get image size
+                        System.Drawing.Image img = System.Drawing.Image.FromFile(files[count].FullName);
+                        bool landscapeimage = img.Height <= img.Width;
+
+                        // Set source if valid
+                        if (landscape && landscapeimage || !landscape && !landscapeimage)
+                        {
+                            image = files[count].FullName;
+                        }
                     }
 
                     count++;
@@ -145,18 +148,28 @@ namespace SpotlightPaper
 
             // Update strip
             // Get local datafolder
-            spSources.Children.Clear();
             info = new DirectoryInfo(System.Windows.Forms.Application.StartupPath + "\\images\\");
-            // Get latest image from source
-            List<FileInfo> locals = info.GetFiles()
-             .OrderBy(f => f.LastWriteTime).ThenBy(f => f.Name).ToList();
-            foreach (FileInfo info in locals)
+            
+            if(info.GetFiles().Length > 0)
             {
-                Image img = new Image();
-                img.Width = 150;
-                img.Height = 80;
-                img.Source = new BitmapImage(new Uri(info.FullName, UriKind.Absolute));
-                spSources.Children.Add(img);
+                spPreviousSpots_strip.Visibility = Visibility.Visible;
+                spSources.Children.Clear();
+
+                // Get latest image from source
+                List<FileInfo> locals = info.GetFiles()
+                 .OrderBy(f => f.LastWriteTime).ThenBy(f => f.Name).ToList();
+                foreach (FileInfo info in locals)
+                {
+                    Image img = new Image();
+                    img.Width = 150;
+                    img.Height = 80;
+                    img.Source = new BitmapImage(new Uri(info.FullName, UriKind.Absolute));
+                    spSources.Children.Add(img);
+                }
+            }
+            else
+            {
+                spPreviousSpots_strip.Visibility = Visibility.Collapsed;
             }
         }
 
