@@ -88,7 +88,7 @@ namespace SpotlightPaper
             if (customimage == "")
             {
                 // Get source datafolder
-                info = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                info = new DirectoryInfo(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
                     + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
 
                 // Get latest image from source
@@ -181,21 +181,20 @@ namespace SpotlightPaper
 
         private void chAutostart_Checked(object sender, RoutedEventArgs e)
         {
-            // Get regis entry
-            RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            string startupdir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Startup);
 
             // Set/Delete key if needed
             if (chAutostart.IsChecked == true)
             {
-                // Set key to run at startup
-                rk.SetValue(System.Windows.Forms.Application.ProductName, System.Windows.Forms.Application.ExecutablePath);
+                // Create shortcut to startup folder
+                Environment.createAppShortcut(startupdir);
             }
             else
             {
                 // Delete key
-                if (rk.GetValueNames().Contains(System.Windows.Forms.Application.ProductName))
+                if (File.Exists(startupdir + "\\SpotlightPaper.lnk"))
                 {
-                    rk.DeleteValue(System.Windows.Forms.Application.ProductName);
+                    File.Delete(startupdir + "\\SpotlightPaper.lnk");
                 }
             }
 
