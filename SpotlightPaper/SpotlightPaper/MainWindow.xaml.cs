@@ -161,7 +161,7 @@ namespace SpotlightPaper
 
                 // Get latest image from source
                 List<FileInfo> locals = info.GetFiles()
-                 .OrderBy(f => f.LastWriteTime).ThenBy(f => f.Name).ToList();
+                 .OrderByDescending(f => f.LastWriteTime).ToList();
                 foreach (FileInfo info in locals)
                 {
                     Image img = new Image();
@@ -187,7 +187,7 @@ namespace SpotlightPaper
         {
             string startupdir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Startup);
 
-            // Set/Delete key if needed
+            // Set/Delete shortcut if needed
             if (chAutostart.IsChecked == true)
             {
                 // Create shortcut to startup folder
@@ -195,7 +195,7 @@ namespace SpotlightPaper
             }
             else
             {
-                // Delete key
+                // Delete shortcut
                 if (File.Exists(startupdir + "\\SpotlightPaper.lnk"))
                 {
                     File.Delete(startupdir + "\\SpotlightPaper.lnk");
