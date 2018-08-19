@@ -61,7 +61,7 @@ namespace SpotlightPaper
         private void Timer_Tick(object sender, EventArgs e)
         {
             // Update desktop wallpaper
-            setPapers(true);
+            setPapers(settings.changepaper, settings.lastloaded);
         }
 
         private void chEnable_Checked(object sender, RoutedEventArgs e)
@@ -78,7 +78,6 @@ namespace SpotlightPaper
             }
             else
             {
-                timer.Stop();
                 iconUri = new Uri(System.Windows.Forms.Application.StartupPath + "\\tray.ico", UriKind.RelativeOrAbsolute);
             }
 
@@ -97,51 +96,49 @@ namespace SpotlightPaper
         {
             string image = "";
 
+            // Update datafolder
+            // Get source datafolder
+            info = new DirectoryInfo(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
+                + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
+
+            // Get latest image from source
+            List<FileInfo> files = info.GetFiles()
+             .OrderByDescending(f => f.LastWriteTime).ToList();
+
+            // Get image from source datafolder
+            int count = 0;
+            bool skip = false;
+            while ((image == "" || !skip) && count < files.Count)
+            {
+                if (Imaging.IsValidImage(files[count].FullName))
+                {
+                    // Get image size
+                    System.Drawing.Image img = System.Drawing.Image.FromFile(files[count].FullName);
+
+                    // Set source if valid
+                    if (Screen.PrimaryScreen.Bounds.Height == img.Height && Screen.PrimaryScreen.Bounds.Width == img.Width)
+                    {
+                        image = files[count].FullName;
+                        skip = !skip; // Skip first valid, looks like this is working
+                    }
+                }
+
+                count++;
+            }
+
+            // Copy file if new image to local folder
+            if (!Directory.Exists(System.Windows.Forms.Application.StartupPath + "\\images\\"))
+            {
+                Directory.CreateDirectory(System.Windows.Forms.Application.StartupPath + "\\images\\");
+            }
+            if (!File.Exists(System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name))
+            {
+                File.Copy(image, System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name);
+            }
+
+            // Set image
             if (customimage == "" || customimage == null)
             {
-                // Get source datafolder
-                info = new DirectoryInfo(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
-                    + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
-
-                // Get latest image from source
-                List<FileInfo> files = info.GetFiles()
-                 .OrderByDescending(f => f.LastWriteTime).ToList();
-
-                // Get screen rotation
-                bool landscape = Screen.PrimaryScreen.WorkingArea.Height <= Screen.PrimaryScreen.WorkingArea.Width;
-
-                // Get image from source datafolder
-                int count = 0;
-                bool skip = false;
-                while ((image == "" || !skip) && count < files.Count)
-                {
-                    if (Imaging.IsValidImage(files[count].FullName))
-                    {
-                        // Get image size
-                        System.Drawing.Image img = System.Drawing.Image.FromFile(files[count].FullName);
-                        bool landscapeimage = img.Height <= img.Width;
-
-                        // Set source if valid
-                        if (landscape && landscapeimage || !landscape && !landscapeimage)
-                        {
-                            image = files[count].FullName;
-                            skip = !skip;
-                        }
-                    }
-
-                    count++;
-                }
-
-                // Copy file if new image to local folder
-                if (!Directory.Exists(System.Windows.Forms.Application.StartupPath + "\\images\\"))
-                {
-                    Directory.CreateDirectory(System.Windows.Forms.Application.StartupPath + "\\images\\");
-                }
-                if (!File.Exists(System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name))
-                {
-                    File.Copy(image, System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name);
-                }
-
                 // Set image source of local folder
                 image = System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name;
             }
