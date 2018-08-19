@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 
 namespace SpotlightPaper
 {
@@ -27,6 +28,8 @@ namespace SpotlightPaper
         DirectoryInfo info;
 
         Settings settings;
+
+        string _tempImageclicked;
 
         public MainWindow(Settings settings, App parent)
         {
@@ -50,6 +53,9 @@ namespace SpotlightPaper
             // Setup UI
             chEnable.IsChecked = settings.changepaper;
             chAutostart.IsChecked = settings.autostart;
+
+            //Correct current spotlight imageview to right dimensions
+            imgBackground.Height = (this.Width / Screen.PrimaryScreen.WorkingArea.Width) * Screen.PrimaryScreen.WorkingArea.Height;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -67,6 +73,8 @@ namespace SpotlightPaper
             {
                 setPapers(true);
                 timer.Start();
+
+                settings.lastloaded = "";
             }
             else
             {
@@ -97,14 +105,15 @@ namespace SpotlightPaper
 
                 // Get latest image from source
                 List<FileInfo> files = info.GetFiles()
-                 .OrderByDescending(f => f.LastAccessTime).ToList();
+                 .OrderByDescending(f => f.LastWriteTime).ToList();
 
                 // Get screen rotation
                 bool landscape = Screen.PrimaryScreen.WorkingArea.Height <= Screen.PrimaryScreen.WorkingArea.Width;
 
                 // Get image from source datafolder
                 int count = 0;
-                while (image == "")
+                bool skip = false;
+                while ((image == "" || !skip) && count < files.Count)
                 {
                     if (Imaging.IsValidImage(files[count].FullName))
                     {
@@ -116,6 +125,7 @@ namespace SpotlightPaper
                         if (landscape && landscapeimage || !landscape && !landscapeimage)
                         {
                             image = files[count].FullName;
+                            skip = !skip;
                         }
                     }
 
@@ -164,17 +174,80 @@ namespace SpotlightPaper
                  .OrderByDescending(f => f.LastWriteTime).ToList();
                 foreach (FileInfo info in locals)
                 {
+                    System.Windows.Controls.Button btnimagecontainer = new System.Windows.Controls.Button();
+
+                    // Get image
+                    System.Drawing.Image i = System.Drawing.Image.FromFile(info.FullName);
+
+                    // Set image control
                     Image img = new Image();
                     img.Width = 150;
-                    img.Height = 80;
+                    img.Height = (150.00 / i.Width) * i.Height;
                     img.Source = new BitmapImage(new Uri(info.FullName, UriKind.Absolute));
-                    spSources.Children.Add(img);
+
+                    btnimagecontainer.Content = img;
+
+                    btnimagecontainer.Tag = info.Name;
+
+                    // Setup contextmenu
+                    System.Windows.Controls.ContextMenu menu = new System.Windows.Controls.ContextMenu();
+
+                    System.Windows.Controls.MenuItem miSet = new System.Windows.Controls.MenuItem();
+                    miSet.Header = "Set";
+                    miSet.Click += MiSet_Click;
+                    menu.Items.Add(miSet);
+                    System.Windows.Controls.MenuItem miSave = new System.Windows.Controls.MenuItem();
+                    miSave.Header = "Save";
+                    miSave.Click += MiSave_Click;
+                    menu.Items.Add(miSave);
+
+                    btnimagecontainer.ContextMenu = menu;
+
+                    // On image click
+                    btnimagecontainer.Click += Btnimagecontainer_Click;
+                    
+                    // Add to strip
+                    spSources.Children.Add(btnimagecontainer);
                 }
             }
             else
             {
                 spPreviousSpots_strip.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void MiSave_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Save Spotlight image as";
+            saveFileDialog.Filter = "JPG|*.jpg";
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                File.Copy(System.Windows.Forms.Application.StartupPath + "\\images\\" + this._tempImageclicked, saveFileDialog.FileName);
+            }
+        }
+
+        private void MiSet_Click(object sender, RoutedEventArgs e)
+        {
+            // Unable autochange
+            chEnable.IsChecked = false;
+
+            setPapers(true, this._tempImageclicked);
+
+            // Update settings
+            settings.lastloaded = this._tempImageclicked;
+            settings.saveSettings();
+        }
+
+        private void Btnimagecontainer_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.Button origin = (System.Windows.Controls.Button)sender;
+
+            // Get image clicked
+            this._tempImageclicked = origin.Tag.ToString();
+
+            // Open contextmenu
+            origin.ContextMenu.IsOpen = true;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

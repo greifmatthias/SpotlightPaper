@@ -8,11 +8,57 @@
         ResizeMode="NoResize"
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
-        Closing="Window_Closing">
+        Closing="Window_Closing"
+        SizeToContent="Height">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="Border" CornerRadius="2" BorderThickness="0" Background="Transparent">
+                            <ContentPresenter
+                                Margin="5"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center" 
+                                 RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter TargetName="Border" 
+                          Property="BorderBrush" Value="#25000000" />
+                            </Trigger>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter TargetName="Border" 
+                          Property="BorderBrush" Value="#25000000" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" 
+                          Property="Background" Value="#25000000" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="Border" 
+                          Property="Background" Value="#50000000" />
+                                <Setter TargetName="Border" 
+                          Property="BorderBrush" Value="#25000000" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="Border" 
+                          Property="Background" Value="Transparent" />
+                                <Setter TargetName="Border" 
+                          Property="BorderBrush" Value="#25000000" />
+                                <Setter Property="Foreground" Value="#25000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
 
@@ -26,7 +72,7 @@
                     </LinearGradientBrush>
                 </Grid.Background>
 
-                <TextBlock Text="Current Spotlight" VerticalAlignment="Bottom" Margin="25, 20" Foreground="#FFFFFF" FontSize="20"></TextBlock>
+                <TextBlock Text="Currently set" VerticalAlignment="Bottom" Margin="25, 20" Foreground="#FFFFFF" FontSize="20"></TextBlock>
             </Grid>
         </Grid>
 
@@ -37,10 +83,10 @@
                 
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                     <StackPanel Orientation="Horizontal">
-                        <Grid Width="25"></Grid>
+                        <Grid Width="20"></Grid>
                         <StackPanel x:Name="spSources" Orientation="Horizontal" Margin="0, 0, 0, 20">
                         </StackPanel>
-                        <Grid Width="25"></Grid>
+                        <Grid Width="20"></Grid>
                     </StackPanel>
                 </ScrollViewer>
             </StackPanel>
@@ -55,7 +101,7 @@
                 </StackPanel>
             </CheckBox>
             <CheckBox x:Name="chAutostart" Checked="chAutostart_Checked" Unchecked="chAutostart_Checked" Margin="25,10,25,25">
-                <TextBlock Text="Automatically launch the application in the background when this beast starts up." TextWrapping="WrapWithOverflow"></TextBlock>
+                <TextBlock Text="Automatically launch the application in the background when this machine starts up." TextWrapping="WrapWithOverflow"></TextBlock>
             </CheckBox>
         </StackPanel>
     </Grid>
