@@ -35,25 +35,31 @@ namespace SpotlightPaper
                 trayicon = new NotifyIcon();
                 trayicon.Visible = true;
 
-                runningChanged(this.settings.changepaper);
-
-                trayicon.DoubleClick += Trayicon_DoubleClick;
-
                 // Init control window
                 window = new MainWindow(this.settings, this);
+                
+                // Update trayicon
+                runningChanged(this.settings.changepaper);
+
+                // On trayicon doubleclick
+                trayicon.DoubleClick += Trayicon_DoubleClick;
 
                 // On application quit
                 this.Exit += App_Exit;
+
+                // Ensure app shortcut is available in program start menu; Because standalone
+                Environment.createAppShortcut(System.Environment.GetFolderPath(System.Environment.SpecialFolder.StartMenu));
             }
             else
             {
-                // just one instance is required to run
+                // just one instance is required to run; older one is running, shutdown this one
                 System.Windows.Application.Current.Shutdown();
             }
         }
 
         private void App_Exit(object sender, ExitEventArgs e)
         {
+            // Hide icon when exit
             trayicon.Visible = false;
         }
 

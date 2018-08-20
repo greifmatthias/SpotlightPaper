@@ -94,7 +94,7 @@
             <CheckBox x:Name="chEnable" Checked="chEnable_Checked" Unchecked="chEnable_Checked" Margin="25,25,25,10">
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Enable periodically Windows Spotlight image as desktop wallpaper." TextWrapping="WrapWithOverflow"></TextBlock>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel x:Name="spLastUpdate" Orientation="Horizontal" Visibility="Collapsed">
                         <TextBlock Text="Desktop last updated at: " Margin="0,3" Foreground="#BB000000" FontStyle="Italic"></TextBlock>
                         <TextBlock x:Name="tbUpdateStamp" Text="not yet" Margin="0,3" Foreground="#BB000000" FontStyle="Italic"></TextBlock>
                     </StackPanel>

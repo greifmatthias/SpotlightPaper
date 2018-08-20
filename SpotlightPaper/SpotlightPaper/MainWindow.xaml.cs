@@ -36,7 +36,7 @@ namespace SpotlightPaper
             // Check if need to run
             this.parent = parent;
 
-            //Setup timer
+            // Setup timer
             Timer timer = new Timer();
             timer.Tick += Timer_Tick;
             timer.Interval = 1000 * 60 * 60; // 1 hour
@@ -44,8 +44,8 @@ namespace SpotlightPaper
 
             timer.Start();
 
-            // Make sure sample image is set
-            setPapers(false, settings.lastloaded);
+            // Make sure images are set
+            setPapers(settings.lastloaded);
 
             // Setup UI
             chEnable.IsChecked = settings.changepaper;
@@ -55,29 +55,35 @@ namespace SpotlightPaper
         private void Timer_Tick(object sender, EventArgs e)
         {
             // Update desktop wallpaper
-            setPapers(settings.changepaper, settings.lastloaded);
+            setPapers(settings.lastloaded);
         }
 
         private void chEnable_Checked(object sender, RoutedEventArgs e)
         {
             Uri iconUri = new Uri(System.Windows.Forms.Application.StartupPath + "\\tray-on.ico", UriKind.RelativeOrAbsolute);
-
-            // Start or stop timer
+            
             if (chEnable.IsChecked == true)
             {
-                setPapers(true);
+                // Set wallpaper
+                setPapers(null);
                 // Reset setting
                 settings.lastloaded = "";
+
+                // Update UI
+                spLastUpdate.Visibility = Visibility.Visible;
             }
             else
             {
                 iconUri = new Uri(System.Windows.Forms.Application.StartupPath + "\\tray.ico", UriKind.RelativeOrAbsolute);
+
+                // Update UI
+                spLastUpdate.Visibility = Visibility.Collapsed;
             }
 
             // Set window icon
             this.Icon = BitmapFrame.Create(iconUri);
 
-            // Update app
+            // Update tray
             parent.runningChanged(chEnable.IsChecked.Value);
 
             // Update settings
@@ -85,7 +91,7 @@ namespace SpotlightPaper
             settings.saveSettings();
         }
 
-        private void setPapers(Boolean wallpaperset, string customimage = "")
+        private void setPapers(string customimage = "")
         {
             string image = "";
 
@@ -144,11 +150,8 @@ namespace SpotlightPaper
             if (image != "")
             {
                 // Set desktop wallpaper if needed
-                if (wallpaperset)
-                {
-                    Wallpaper.Set(new Uri(image), Wallpaper.Style.Centered);
-                    tbUpdateStamp.Text = DateTime.Now.ToLocalTime().ToString();
-                }
+                Wallpaper.Set(new Uri(image), Wallpaper.Style.Centered);
+                tbUpdateStamp.Text = DateTime.Now.ToLocalTime().ToString();
 
                 // Set sample
                 imgBackground.Source = new BitmapImage(new Uri(image, UriKind.Absolute));
@@ -212,11 +215,13 @@ namespace SpotlightPaper
 
         private void MiSave_Click(object sender, RoutedEventArgs e)
         {
+            // Open up a dialog
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "Save Spotlight image as";
             saveFileDialog.Filter = "JPG|*.jpg";
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                // Copy from temp folder
                 File.Copy(System.Windows.Forms.Application.StartupPath + "\\images\\" + this._imageclicked, saveFileDialog.FileName);
             }
         }
@@ -227,7 +232,7 @@ namespace SpotlightPaper
             chEnable.IsChecked = false;
 
             // Set wallpaper
-            setPapers(true, this._imageclicked);
+            setPapers(this._imageclicked);
 
             // Update settings
             settings.lastloaded = this._imageclicked;
