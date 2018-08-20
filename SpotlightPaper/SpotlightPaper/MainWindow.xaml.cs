@@ -20,16 +20,11 @@ namespace SpotlightPaper
     public partial class MainWindow : Window
     {
         // Vars
-        String image;
         App parent;
-
-        Timer timer;
-
-        DirectoryInfo info;
-
         Settings settings;
 
-        string _tempImageclicked;
+        // Temp
+        string _imageclicked;
 
         public MainWindow(Settings settings, App parent)
         {
@@ -42,10 +37,12 @@ namespace SpotlightPaper
             this.parent = parent;
 
             //Setup timer
-            timer = new Timer();
+            Timer timer = new Timer();
             timer.Tick += Timer_Tick;
             timer.Interval = 1000 * 60 * 60; // 1 hour
             timer.Enabled = true;
+
+            timer.Start();
 
             // Make sure sample image is set
             setPapers(false, settings.lastloaded);
@@ -53,9 +50,6 @@ namespace SpotlightPaper
             // Setup UI
             chEnable.IsChecked = settings.changepaper;
             chAutostart.IsChecked = settings.autostart;
-
-            //Correct current spotlight imageview to right dimensions
-            imgBackground.Height = (this.Width / Screen.PrimaryScreen.WorkingArea.Width) * Screen.PrimaryScreen.WorkingArea.Height;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -72,8 +66,7 @@ namespace SpotlightPaper
             if (chEnable.IsChecked == true)
             {
                 setPapers(true);
-                timer.Start();
-
+                // Reset setting
                 settings.lastloaded = "";
             }
             else
@@ -98,7 +91,7 @@ namespace SpotlightPaper
 
             // Update datafolder
             // Get source datafolder
-            info = new DirectoryInfo(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
+            DirectoryInfo info = new DirectoryInfo(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
                 + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
 
             // Get latest image from source
@@ -147,15 +140,19 @@ namespace SpotlightPaper
                 image = System.Windows.Forms.Application.StartupPath + "\\images\\" + customimage;
             }
 
-            // Set desktop wallpaper if needed
-            if (wallpaperset)
+            // Set image if valid
+            if (image != "")
             {
-                Wallpaper.Set(new Uri(image), Wallpaper.Style.Centered);
-                tbUpdateStamp.Text = DateTime.Now.ToLocalTime().ToString();
-            }
+                // Set desktop wallpaper if needed
+                if (wallpaperset)
+                {
+                    Wallpaper.Set(new Uri(image), Wallpaper.Style.Centered);
+                    tbUpdateStamp.Text = DateTime.Now.ToLocalTime().ToString();
+                }
 
-            // Set sample
-            imgBackground.Source = new BitmapImage(new Uri(image, UriKind.Absolute));
+                // Set sample
+                imgBackground.Source = new BitmapImage(new Uri(image, UriKind.Absolute));
+            }
 
             // Update strip
             // Get local datafolder
@@ -169,22 +166,22 @@ namespace SpotlightPaper
                 // Get latest image from source
                 List<FileInfo> locals = info.GetFiles()
                  .OrderByDescending(f => f.LastWriteTime).ToList();
-                foreach (FileInfo info in locals)
+                foreach (FileInfo finfo in locals)
                 {
                     System.Windows.Controls.Button btnimagecontainer = new System.Windows.Controls.Button();
 
                     // Get image
-                    System.Drawing.Image i = System.Drawing.Image.FromFile(info.FullName);
+                    System.Drawing.Image i = System.Drawing.Image.FromFile(finfo.FullName);
 
                     // Set image control
                     Image img = new Image();
                     img.Width = 150;
                     img.Height = (150.00 / i.Width) * i.Height;
-                    img.Source = new BitmapImage(new Uri(info.FullName, UriKind.Absolute));
+                    img.Source = new BitmapImage(new Uri(finfo.FullName, UriKind.Absolute));
 
                     btnimagecontainer.Content = img;
 
-                    btnimagecontainer.Tag = info.Name;
+                    btnimagecontainer.Tag = finfo.Name;
 
                     // Setup contextmenu
                     System.Windows.Controls.ContextMenu menu = new System.Windows.Controls.ContextMenu();
@@ -220,7 +217,7 @@ namespace SpotlightPaper
             saveFileDialog.Filter = "JPG|*.jpg";
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                File.Copy(System.Windows.Forms.Application.StartupPath + "\\images\\" + this._tempImageclicked, saveFileDialog.FileName);
+                File.Copy(System.Windows.Forms.Application.StartupPath + "\\images\\" + this._imageclicked, saveFileDialog.FileName);
             }
         }
 
@@ -229,19 +226,21 @@ namespace SpotlightPaper
             // Unable autochange
             chEnable.IsChecked = false;
 
-            setPapers(true, this._tempImageclicked);
+            // Set wallpaper
+            setPapers(true, this._imageclicked);
 
             // Update settings
-            settings.lastloaded = this._tempImageclicked;
+            settings.lastloaded = this._imageclicked;
             settings.saveSettings();
         }
 
         private void Btnimagecontainer_Click(object sender, RoutedEventArgs e)
         {
+            // Get strip image clicked
             System.Windows.Controls.Button origin = (System.Windows.Controls.Button)sender;
 
             // Get image clicked
-            this._tempImageclicked = origin.Tag.ToString();
+            this._imageclicked = origin.Tag.ToString();
 
             // Open contextmenu
             origin.ContextMenu.IsOpen = true;
@@ -255,6 +254,7 @@ namespace SpotlightPaper
 
         private void chAutostart_Checked(object sender, RoutedEventArgs e)
         {
+            // Get machine autostartup folder
             string startupdir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Startup);
 
             // Set/Delete shortcut if needed

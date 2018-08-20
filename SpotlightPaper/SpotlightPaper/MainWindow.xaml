@@ -63,7 +63,7 @@
         </Grid.RowDefinitions>
 
         <Grid>
-            <Image x:Name="imgBackground" Stretch="UniformToFill"></Image>
+            <Image x:Name="imgBackground" Stretch="UniformToFill" Height="auto"></Image>
             <Grid>
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0.5, 0" EndPoint="0.5, 1">
