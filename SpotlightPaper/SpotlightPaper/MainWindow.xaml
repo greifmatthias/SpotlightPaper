@@ -64,24 +64,6 @@
         </Grid.RowDefinitions>
 
         <Grid>
-            <Grid x:Name="grExtras">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-                <Button x:Name="btnQuit" Click="btnQuit_Click">
-                    <TextBlock Text="Quit" Margin="10"></TextBlock>
-                </Button>
-
-                <Button x:Name="btnAbout" Grid.Column="1" Click="btnAbout_Click">
-                    <TextBlock Text="About" Margin="10"></TextBlock>
-                </Button>
-
-            </Grid>
-        </Grid>
-
-        <Grid Grid.Row="1">
             <Image x:Name="imgBackground" Stretch="UniformToFill" Height="auto"></Image>
             <Grid>
                 <Grid.Background>
@@ -95,7 +77,7 @@
             </Grid>
         </Grid>
 
-        <StackPanel Grid.Row="2" Orientation="Vertical" Background="#ECEFF1">
+        <StackPanel Grid.Row="1" Orientation="Vertical" Background="#ECEFF1">
 
             <StackPanel x:Name="spPreviousSpots_strip" Orientation="Vertical" Background="#20000000">
                 <TextBlock Text="Previous spots" Margin="25, 25, 25, 10"></TextBlock>
@@ -123,5 +105,25 @@
                 <TextBlock Text="Automatically launch the application in the background when this machine starts up." TextWrapping="WrapWithOverflow"></TextBlock>
             </CheckBox>
         </StackPanel>
+
+        <Grid Grid.Row="2">
+            <Expander Header="Check more" Margin="25, 10">
+                <Grid Margin="0, 10, 0, 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="btnQuit" Click="btnQuit_Click">
+                        <TextBlock Text="Quit the application" Margin="10"></TextBlock>
+                    </Button>
+
+                    <Button x:Name="btnAbout" Grid.Column="1" Click="btnAbout_Click">
+                        <TextBlock Text="About" Margin="10"></TextBlock>
+                    </Button>
+
+                </Grid>
+            </Expander>
+        </Grid>
     </Grid>
 </Window>

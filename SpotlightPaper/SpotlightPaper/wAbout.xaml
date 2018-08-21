@@ -9,7 +9,7 @@
         SizeToContent="Height"
         WindowStyle="SingleBorderWindow"
         ResizeMode="NoResize"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <Style TargetType="Button">
@@ -58,7 +58,7 @@
     
     <Grid Background="#263238">
         <Grid.RowDefinitions>
-            <RowDefinition Height="150"></RowDefinition>
+            <RowDefinition Height="200"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
