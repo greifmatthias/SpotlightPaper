@@ -93,6 +93,7 @@ namespace SpotlightPaper
 
         private void setPapers(string customimage = "")
         {
+            // End url of image to set
             string image = "";
 
             // Update datafolder
@@ -280,6 +281,16 @@ namespace SpotlightPaper
             // Set/Save settings
             settings.autostart = chAutostart.IsChecked == true;
             settings.saveSettings();
+        }
+
+        private void btnQuit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        private void btnAbout_Click(object sender, RoutedEventArgs e)
+        {
+            new wAbout().ShowDialog();
         }
     }
 }

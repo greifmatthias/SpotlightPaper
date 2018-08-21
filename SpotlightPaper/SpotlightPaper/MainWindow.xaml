@@ -12,10 +12,10 @@
         SizeToContent="Height">
 
     <Window.Resources>
-        <Style TargetType="{x:Type Button}">
+        <Style TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
+                    <ControlTemplate TargetType="Button">
                         <Border Name="Border" CornerRadius="2" BorderThickness="0" Background="Transparent">
                             <ContentPresenter
                                 Margin="5"
@@ -60,9 +60,28 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid>
+            <Grid x:Name="grExtras">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="btnQuit" Click="btnQuit_Click">
+                    <TextBlock Text="Quit" Margin="10"></TextBlock>
+                </Button>
+
+                <Button x:Name="btnAbout" Grid.Column="1" Click="btnAbout_Click">
+                    <TextBlock Text="About" Margin="10"></TextBlock>
+                </Button>
+
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1">
             <Image x:Name="imgBackground" Stretch="UniformToFill" Height="auto"></Image>
             <Grid>
                 <Grid.Background>
@@ -76,7 +95,7 @@
             </Grid>
         </Grid>
 
-        <StackPanel Grid.Row="1" Orientation="Vertical" Background="#ECEFF1">
+        <StackPanel Grid.Row="2" Orientation="Vertical" Background="#ECEFF1">
 
             <StackPanel x:Name="spPreviousSpots_strip" Orientation="Vertical" Background="#20000000">
                 <TextBlock Text="Previous spots" Margin="25, 25, 25, 10"></TextBlock>
