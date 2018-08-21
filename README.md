@@ -4,4 +4,4 @@ SpotlightPaper is a really simple and small Windows desktop application, running
 Just grab the latest installer in [the Release section](https://github.com/greifmatthias/SpotlightPaper/releases).
 
 ## Latest shots
-![Screenshot](/Assets/screen_180819.png)
+![Screenshot](/Assets/screen_180819.jpg)
