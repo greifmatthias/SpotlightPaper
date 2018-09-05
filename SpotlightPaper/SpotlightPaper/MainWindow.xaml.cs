@@ -55,6 +55,7 @@ namespace SpotlightPaper
         private void Timer_Tick(object sender, EventArgs e)
         {
             // Update desktop wallpaper
+            checkDir();
             setPapers(settings.lastloaded);
         }
 
@@ -93,11 +94,12 @@ namespace SpotlightPaper
 
         private void setPapers(string customimage = "")
         {
-            // End url of image to set
-            string image = "";
+            // Check source folder
+            checkDir();
 
-            // Update datafolder
-            // Get source datafolder
+            String image = "";
+
+            // Get file
             DirectoryInfo info = new DirectoryInfo(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
                 + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
 
@@ -105,42 +107,11 @@ namespace SpotlightPaper
             List<FileInfo> files = info.GetFiles()
              .OrderByDescending(f => f.LastWriteTime).ToList();
 
-            // Get image from source datafolder
-            int count = 0;
-            bool skip = false;
-            while ((image == "" || !skip) && count < files.Count)
-            {
-                if (Imaging.IsValidImage(files[count].FullName))
-                {
-                    // Get image size
-                    System.Drawing.Image img = System.Drawing.Image.FromFile(files[count].FullName);
-
-                    // Set source if valid
-                    if (Screen.PrimaryScreen.Bounds.Height == img.Height && Screen.PrimaryScreen.Bounds.Width == img.Width)
-                    {
-                        image = files[count].FullName;
-                        skip = !skip; // Skip first valid, looks like this is working
-                    }
-                }
-
-                count++;
-            }
-
-            // Copy file if new image to local folder
-            if (!Directory.Exists(System.Windows.Forms.Application.StartupPath + "\\images\\"))
-            {
-                Directory.CreateDirectory(System.Windows.Forms.Application.StartupPath + "\\images\\");
-            }
-            if (!File.Exists(System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name))
-            {
-                File.Copy(image, System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name);
-            }
-
             // Set image
             if (customimage == "" || customimage == null)
             {
                 // Set image source of local folder
-                image = System.Windows.Forms.Application.StartupPath + "\\images\\" + files[count].Name;
+                image = System.Windows.Forms.Application.StartupPath + "\\images\\" + files[0].Name;
             }
             else
             {
@@ -156,61 +127,6 @@ namespace SpotlightPaper
 
                 // Set sample
                 imgBackground.Source = new BitmapImage(new Uri(image, UriKind.Absolute));
-            }
-
-            // Update strip
-            // Get local datafolder
-            info = new DirectoryInfo(System.Windows.Forms.Application.StartupPath + "\\images\\");
-            
-            if(info.GetFiles().Length > 0)
-            {
-                spPreviousSpots_strip.Visibility = Visibility.Visible;
-                spSources.Children.Clear();
-
-                // Get latest image from source
-                List<FileInfo> locals = info.GetFiles()
-                 .OrderByDescending(f => f.LastWriteTime).ToList();
-                foreach (FileInfo finfo in locals)
-                {
-                    System.Windows.Controls.Button btnimagecontainer = new System.Windows.Controls.Button();
-
-                    // Get image
-                    System.Drawing.Image i = System.Drawing.Image.FromFile(finfo.FullName);
-
-                    // Set image control
-                    Image img = new Image();
-                    img.Width = 150;
-                    img.Height = (150.00 / i.Width) * i.Height;
-                    img.Source = new BitmapImage(new Uri(finfo.FullName, UriKind.Absolute));
-
-                    btnimagecontainer.Content = img;
-
-                    btnimagecontainer.Tag = finfo.Name;
-
-                    // Setup contextmenu
-                    System.Windows.Controls.ContextMenu menu = new System.Windows.Controls.ContextMenu();
-
-                    System.Windows.Controls.MenuItem miSet = new System.Windows.Controls.MenuItem();
-                    miSet.Header = "Set";
-                    miSet.Click += MiSet_Click;
-                    menu.Items.Add(miSet);
-                    System.Windows.Controls.MenuItem miSave = new System.Windows.Controls.MenuItem();
-                    miSave.Header = "Save";
-                    miSave.Click += MiSave_Click;
-                    menu.Items.Add(miSave);
-
-                    btnimagecontainer.ContextMenu = menu;
-
-                    // On image click
-                    btnimagecontainer.Click += Btnimagecontainer_Click;
-                    
-                    // Add to strip
-                    spSources.Children.Add(btnimagecontainer);
-                }
-            }
-            else
-            {
-                spPreviousSpots_strip.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -291,6 +207,99 @@ namespace SpotlightPaper
         private void btnAbout_Click(object sender, RoutedEventArgs e)
         {
             new wAbout().ShowDialog();
+        }
+
+        private void checkDir()
+        {
+            // Check target folder
+            if (!Directory.Exists(System.Windows.Forms.Application.StartupPath + "\\images\\"))
+            {
+                Directory.CreateDirectory(System.Windows.Forms.Application.StartupPath + "\\images\\");
+            }
+            
+            // Get source datafolder
+            DirectoryInfo info = new DirectoryInfo(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
+                + "\\Packages\\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\\LocalState\\Assets");
+
+            // Get latest image from source
+            List<FileInfo> files = info.GetFiles()
+             .OrderByDescending(f => f.LastWriteTime).ToList();
+
+            // Get image from source datafolder
+            for(int i = 0; i < files.Count; i++)
+            {
+                if (Imaging.IsValidImage(files[i].FullName))
+                {
+                    // Get image size
+                    System.Drawing.Image img = System.Drawing.Image.FromFile(files[i].FullName);
+
+                    // Copy file if valid
+                    if (Screen.PrimaryScreen.Bounds.Height == img.Height && Screen.PrimaryScreen.Bounds.Width == img.Width)
+                    {
+                        // Copy if new
+                        if (!File.Exists(System.Windows.Forms.Application.StartupPath + "\\images\\" + files[i].Name))
+                        {
+                            files[i].CopyTo(System.Windows.Forms.Application.StartupPath + "\\images\\" + files[i].Name);
+                        }
+                    }
+                }
+            }
+
+            // Update strip
+            // Get local datafolder
+            info = new DirectoryInfo(System.Windows.Forms.Application.StartupPath + "\\images\\");
+
+            if (info.GetFiles().Length > 0)
+            {
+                spPreviousSpots_strip.Visibility = Visibility.Visible;
+                spSources.Children.Clear();
+
+                // Get latest image from source
+                List<FileInfo> locals = info.GetFiles()
+                 .OrderByDescending(f => f.LastWriteTime).ToList();
+
+                foreach (FileInfo finfo in locals)
+                {
+                    System.Windows.Controls.Button btnimagecontainer = new System.Windows.Controls.Button();
+
+                    // Get image
+                    System.Drawing.Image i = System.Drawing.Image.FromFile(finfo.FullName);
+
+                    // Set image control
+                    Image img = new Image();
+                    img.Width = 150;
+                    img.Height = (150.00 / i.Width) * i.Height;
+                    img.Source = new BitmapImage(new Uri(finfo.FullName, UriKind.Absolute));
+
+                    btnimagecontainer.Content = img;
+
+                    btnimagecontainer.Tag = finfo.Name;
+
+                    // Setup contextmenu
+                    System.Windows.Controls.ContextMenu menu = new System.Windows.Controls.ContextMenu();
+
+                    System.Windows.Controls.MenuItem miSet = new System.Windows.Controls.MenuItem();
+                    miSet.Header = "Set";
+                    miSet.Click += MiSet_Click;
+                    menu.Items.Add(miSet);
+                    System.Windows.Controls.MenuItem miSave = new System.Windows.Controls.MenuItem();
+                    miSave.Header = "Save";
+                    miSave.Click += MiSave_Click;
+                    menu.Items.Add(miSave);
+
+                    btnimagecontainer.ContextMenu = menu;
+
+                    // On image click
+                    btnimagecontainer.Click += Btnimagecontainer_Click;
+
+                    // Add to strip
+                    spSources.Children.Add(btnimagecontainer);
+                }
+            }
+            else
+            {
+                spPreviousSpots_strip.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }
